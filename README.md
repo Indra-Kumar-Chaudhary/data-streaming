@@ -52,10 +52,12 @@
 <h2> Create Test Data and Enable Change Data Capture </h2>
     <p> To enable CDC on the monitored database, use the following SQL command: </p>
     <pre>
+    <p>
         USE MyDB
         GO
         EXEC sys.sp_cdc_enable_db
         GO
+    </p>
     </pre>
 
 
