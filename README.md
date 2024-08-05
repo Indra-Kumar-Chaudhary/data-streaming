@@ -14,3 +14,8 @@
 
 5. Create directory for rawdata 
     mkdir filesystem
+
+
+<h1> Debezium SQL Server Source Connector </h1>
+    <b>1. Install the SQL Server Connector </b>
+    

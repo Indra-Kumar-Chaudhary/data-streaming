@@ -1,1 +1,7 @@
 .env
+databases/ms-sql-server/data
+databases/ms-sql-server/log
+databases/ms-sql-server/secrets
+
+volumes/kafka-connect-data 
+volumes/kafka-data
