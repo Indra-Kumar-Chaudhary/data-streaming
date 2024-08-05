@@ -133,6 +133,7 @@
 
 <h2>Clean up resources</h2>
 <p> Delete the connector and stop Confluent services. </p>
-<pre><tab><tab>
+##
+<tab><tab><pre>
     curl -X DELETE localhost:8083/connectors/inventory-connector
 </pre>
