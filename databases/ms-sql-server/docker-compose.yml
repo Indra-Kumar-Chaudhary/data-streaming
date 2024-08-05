@@ -7,7 +7,7 @@ services:
     ports:
       - "1433:1433"
     environment:
-      MSSQL_SA_PASSWORD: "password@131"
+      MSSQL_SA_PASSWORD: $MSSQL_SA_PASSWORD
       ACCEPT_EULA: "Y"
       MSSQL_PID: "Developer"
     volumes:
