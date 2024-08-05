@@ -1,23 +1,16 @@
-<h2>Getting Started</h2>
-<h4> Build container instances and start them</h4>
-<pre>
-    <p> Sample connecctor look in JSON </p>
-    {
-        "name": "DatagenSourceConnector_0",
-        "config": {
-            "connector.class": "DatagenSource",
-            "name": "DatagenSourceConnector_0",
-            "kafka.auth.mode": "KAFKA_API_KEY",
-            "kafka.api.key": "****************",
-            "kafka.api.secret": "****************************************************************",
-            "kafka.topic": "orders",
-            "output.data.format": "JSON",
-            "quickstart": "ORDERS",
-            "tasks.max": "1"
-        }
-    }
-</pre>
+1. First Create all required volume folders
+    mkdir volumes
+    cd volumes
+    mkdir kafka-data
+    mkdir kafka-connect-data 
 
+2. Create folder in docker-compose.yml directory 
+    mkdir confluent-hub-components 
 
-# To check kafka connector installed 
-curl -s localhost:8083/connector-plugins | jq '.[].class'
+3. Create volume folders for Flink 
+    mkdir flink-volumes
+    cd flink-voumes 
+    mkdir settings
+
+5. Create directory for rawdata 
+    mkdir filesystem
