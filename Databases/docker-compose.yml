@@ -1,0 +1,59 @@
+---
+version: '3.7'
+
+services:
+  mysql:
+    image: mysql:8.0.19
+    hostname: mysql
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql-pw
+      MYSQL_DATABASE: call-center
+      MYSQL_USER: example-user
+      MYSQL_PASSWORD: example-pw
+    volumes:
+      - "./mysql/custom-config.cnf:/etc/mysql/conf.d/custom-config.cnf"
+      - "./volume-mysql:/var/lib/mysql"
+  mongo:
+    image: mongo:4.2.5
+    hostname: mongo
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo-user
+      MONGO_INITDB_ROOT_PASSWORD: mongo-pw
+      MONGO_REPLICA_SET_NAME: my-replica-set
+    command: --replSet my-replica-set --bind_ip_all
+    volumes:
+      - "./volume-mongodb:/data/db"
+
+  postgres:
+    image: debezium/postgres:12
+    hostname: postgres
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres-user
+      POSTGRES_PASSWORD: postgres-pw
+      POSTGRES_DB: mydb
+    volumes:
+      - "./postgres/custom-config.conf:/etc/postgresql/postgresql.conf"
+      - "./volume-postgres:/var/lib/postgresql/data"
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf 
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always 
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: indra.chaudhary.tharu@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: password 
+    # volumes:
+    #   - "./pgadmin-data:/root/.pgadmin"
+  
