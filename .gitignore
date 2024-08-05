@@ -1,5 +1,2 @@
 .env
-./kafka-data/*
-./Databases/volume-mongodb/*
-./Databases/volume-postgres/*
-./Databases/volume-mysql/*
+./volumes/
