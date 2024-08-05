@@ -1,7 +1,5 @@
 .env
 ./kafka-data/
-./Databases/volume-mongodb/journal/
-./Databases/volume-mongodb/diagnostic.data/
+./Databases/volume-mongodb/
 ./Databases/volume-postgres/
-./Databases/volume-mongodb/WiredTiger/
-./Databases/volume-mongodb/WiredTiger/
+./Databases/volume-mysql/
