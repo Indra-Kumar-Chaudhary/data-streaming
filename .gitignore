@@ -1,7 +1,5 @@
 .env
 ./kafka-data/
 ./Databases/volume-mongodb/
-./Databases/volume-mongodb/
 ./Databases/volume-postgres/
-./Databases/volume-mongodb/
-./Databases/volume-mongodb/
+./Databases/volume-mysql/
