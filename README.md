@@ -1,7 +1,16 @@
-<h2>Getting Started</h2>
-<h4> Build container instances and start them</h4>
-<pre>
-    <P> sudo docker-compose build --pull sql-client</p>
-    <P>sudo docker-compose build --pull jobmanager </p>
-    <p>sudo docker-compose up -d </p>
-</pre>
+1. First Create all required volume folders
+    mkdir volumes
+    cd volumes
+    mkdir kafka-data
+    mkdir kafka-connect-data 
+
+2. Create folder in docker-compose.yml directory 
+    mkdir confluent-hub-components 
+
+3. Create volume folders for Flink 
+    mkdir flink-volumes
+    cd flink-voumes 
+    mkdir settings
+
+5. Create directory for rawdata 
+    mkdir filesystem
