@@ -3,6 +3,7 @@ services:
 
   broker:
     image: confluentinc/cp-server:7.5.0
+    user: root
     hostname: broker
     container_name: broker
     ports:
