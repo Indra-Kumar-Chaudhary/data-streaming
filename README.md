@@ -119,6 +119,28 @@
         }
     }
 </pre>
+<pre>
+    curl -i -X POST -H "Accept:application/json" \
+        -H "Content-Type:application/json" localhost:8083/connectors -d '{ "name": "debezium-connector", 
+        "config": { 
+            "connector.class": "io.debezium.connector.sqlserver.SqlServerConnector",
+            "database.hostname": "hostip", 
+            "database.port": "1433", 
+            "database.user": "sa",
+            "database.password": "password", 
+            "database.dbname": "testDB", 
+            "database.names":"testDB",
+            "database.server.name": "serverip", 
+            "table.whitelist": "dbo.customers", 
+            "topic.prefix": "fullfillment",
+            "database.history.kafka.bootstrap.servers": "broker:9092", 
+            "database.history.kafka.topic": "schema-changes-topic",
+            "errors.log.enable": "true",
+            "schema.history.internal.kafka.bootstrap.servers": "broker:9092",  
+            "schema.history.internal.kafka.topic": "schema-changes.customers",
+            "database.trustServerCertificate": true  } 
+        }'
+</pre>
 <p> Start the connector </p>
 <pre>
     curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://localhost:8083/connectors/ -d @register-sqlserver.json
@@ -137,3 +159,4 @@
 <tab><tab><pre>
     curl -X DELETE localhost:8083/connectors/inventory-connector
 </pre>
+
