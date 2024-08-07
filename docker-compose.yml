@@ -194,6 +194,8 @@ services:
       KSQL_LISTENERS: "http://0.0.0.0:8088"
       KSQL_CACHE_MAX_BYTES_BUFFERING: 0
       KSQL_KSQL_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      # Setting KSQL_KSQL_CONNECT_WORKER_CONFIG enables embedded Kafka Connect
+      KSQL_KSQL_CONNECT_WORKER_CONFIG: "/etc/ksqldb/connect.properties"
       #kafka connect config below
       KSQL_CONNECT_BOOTSTRAP_SERVERS: "broker:9092"
       KSQL_CONNECT_REST_ADVERTISED_HOST_NAME: 'ksqldb-server'
@@ -213,7 +215,20 @@ services:
       KSQL_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
       KSQL_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
       KSQL_KSQL_CONNECT_URL: "http://kafka-connect:8083"
-      KSQL_CONNECT_PLUGINS_PATH: "/usr/share/kafka/plugins"
+      KSQL_CONNECT_PLUGINS_PATH: "/usr/share/kafka/plugins,/usr/share/java"
+
+    # command:
+    #   - bash 
+    #   - -c 
+    #   - |
+    #     echo "Installing connector plugins"
+    #     mkdir -p /usr/share/confluent-hub-components/
+    #     confluent-hub install --no-prompt --component-dir confluent-hub-components debezium/debezium-connector-postgresql:1.1.0
+
+    #     echo "Launching ksqldb"
+    #     /usr/bin/docker/run &
+
+    #     sleep infinity
    
 
   ksqldb-cli:
