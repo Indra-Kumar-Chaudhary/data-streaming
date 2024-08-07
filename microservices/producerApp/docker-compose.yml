@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+  DataProducer:
+    image: dataproducer:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dataproducer
+    hostname: dataproducer

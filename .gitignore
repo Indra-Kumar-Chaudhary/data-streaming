@@ -6,3 +6,4 @@ databases/ms-sql-server/secrets
 volumes/kafka-connect-data 
 volumes/kafka-data
 connectors-json
+databases/postgres-sql/postgres-data
