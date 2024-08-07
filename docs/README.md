@@ -65,7 +65,7 @@
                 "connector.class":"io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
                 "connection.url":"http://elastic:9200",
                 "type.name":"kafka-connect",
-                "topics":"shipped_orders"
+                "topics":"192.168.1.9.public.customers"
         }
     }
         
@@ -74,4 +74,20 @@
 <p>
 Check that the data arrived in the index by running the following command from your host:</p>
 
-<pre>curl http://localhost:9200/shipped_orders/_search?pretty </pre>
+<pre>curl http://localhost:9200/192.168.1.9.public.customers/_search?pretty </pre>
+
+
+
+<p> Use PUT to create, and update, connector configurations. Here's an example:</p>
+
+<pre>
+    curl -i -X PUT -H  "Content-Type:application/json" \
+        http://localhost:8083/connectors/source-file-01/config \
+        -d '{
+        "connector.class": "org.apache.kafka.connect.file.FileStreamSourceConnector",
+        "file": "/tmp/totail.txt",
+        "topic": "foo",
+        "tasks.max": 6
+    }'
+</pre>
+
