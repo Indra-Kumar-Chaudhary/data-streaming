@@ -10,6 +10,8 @@ services:
       xpack.security.enabled: "false"
       ES_JAVA_OPTS: "-Xms1g -Xmx1g"
       discovery.type: "single-node"
+    volumes:
+      - "./esdata01:/usr/share/elasticsearch/data"
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.10.1
@@ -22,4 +24,6 @@ services:
     environment:
       xpack.security.enabled: "false"
       discovery.type: "single-node"
+    volumes:
+      - "./kibanadata:/usr/share/kibana/data"
     
