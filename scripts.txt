@@ -1,0 +1,142 @@
+
+        curl -i -X PUT -H "Accept:application/json" \
+            -H "Content-Type:application/json" http://192.168.1.9:8083/connectors/source-csv-spooldir-00/config \
+            -d '{
+                "connector.class": "com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector",
+                "topic": "orders_spooldir_00",
+                "input.path": "/data/unprocessed",
+                "finished.path": "/data/processed",
+                "error.path": "/data/error",
+                "input.file.pattern": ".*\\.csv",
+                "schema.generation.enabled":"true",
+                "csv.first.row.as.header":"true"
+            }'
+
+    2. Setting key 
+
+
+
+        curl -i -X PUT -H "Accept:application/json" \
+            -H  "Content-Type:application/json" http://localhost:8083/connectors/source-csv-spooldir-01/config \
+            -d '{
+                "connector.class": "com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector",
+                "topic": "orders_spooldir_01",
+                "input.path": "/data/unprocessed",
+                "finished.path": "/data/processed",
+                "error.path": "/data/error",
+                "input.file.pattern": ".*\\.csv",
+                "schema.generation.enabled":"true",
+                "schema.generation.key.fields":"order_id",
+                "csv.first.row.as.header":"true"
+                }'
+
+
+    3. view message 
+
+    sudo docker exec kafkacat \
+    kafkacat -b broker:9092 -t orders_spooldir_01 -o-1 \
+             -C -J \
+             -s key=s -s value=avro -r http://schema-registry:8081 | \
+             jq '{"key":.key,"payload": .payload}'
+
+
+    4. Single Message Transormation 
+
+
+
+    curl -i -X PUT -H "Accept:application/json" \
+        -H  "Content-Type:application/json" http://localhost:8083/connectors/source-csv-spooldir-02/config \
+        -d '{
+            "connector.class": "com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector",
+            "topic": "orders_spooldir_02",
+            "input.path": "/data/unprocessed",
+            "finished.path": "/data/processed",
+            "error.path": "/data/error",
+            "input.file.pattern": ".*\\.csv",
+            "schema.generation.enabled":"true",
+            "schema.generation.key.fields":"order_id",
+            "csv.first.row.as.header":"true",
+            "transforms":"castTypes",
+            "transforms.castTypes.type":"org.apache.kafka.connect.transforms.Cast$Value",
+            "transforms.castTypes.spec":"order_id:int32,customer_id:int32,order_total_usd:float32"
+            }'
+
+    ## view messages 
+    sudo docker exec kafkacat \
+    kafkacat -b broker:9092 -t orders_spooldir_02 -o-1 \
+             -C -J \
+             -s key=s -s value=avro -r http://schema-registry:8081 | \
+             jq '{"key":.key,"payload": .payload}'
+
+    ## To view schema registered in schema-registry 
+curl --silent --location --request GET 'http://localhost:8081/subjects/orders_spooldir_02-value/versions/latest' |jq '.schema|fromjson'
+
+
+---------------------------------------Target-----------------------SINK the data--------------
+
+# Streaming CSV data from kafka to a databases
+Since we 've a schema to the data, we can easily sink it to a database 
+
+
+curl -X PUT http://localhost:8083/connectors/sink-postgres-orders-00/config \
+    -H "Content-Type: application/json" \
+    -d '{
+        "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+        "connection.url": "jdbc:postgresql://192.168.1.9:5432/mydb",
+        "connection.user": "postgres-user",
+        "connection.password": "postgres-pw",
+        "tasks.max": "1",
+        "topics": "orders_spooldir_02",
+        "auto.create": "true",
+        "auto.evolve":"true",
+        "pk.mode":"record_value",
+        "pk.fields":"order_id",
+        "insert.mode": "upsert",
+        "table.name.format":"orders"
+    }'
+
+
+## JDBCSINK connector for SQL SERVER 
+
+curl -X PUT http://localhost:8083/connectors/sink-sql-server-orders-00/config \
+    -H "Content-Type: application/json" \
+    -d '{
+        "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+        "connection.url": "jdbc:sqlserver://192.168.1.9:1433;databaseName=mydb",
+        "connection.user": "sa",
+        "connection.password": "password@131",
+        "tasks.max": "1",
+        "topics": "orders_spooldir_02",
+        "auto.create": "true",
+        "auto.evolve":"true",
+        "pk.mode":"record_value",
+        "pk.fields":"order_id",
+        "insert.mode": "upsert",
+        "table.name.format":"orders"
+    }'
+
+
+--- Creating Streams ---
+CREATE STREAM ORDERS_02 WITH (KAFKA_TOPIC='orders_spooldir_02',VALUE_FORMAT='AVRO');
+
+--- Describe --
+
+DESCRIBE ORDERS_02;
+
+-- Run query against the data thats in kafka --
+SELECT 
+    DELIVERY_CITY, 
+    COUNT(*) AS ORDER_COUNT, 
+    MAX(CAST(ORDER_TOTAL_USD AS DECIMAL(9,2))) AS BIGGEST_ORDER_USD 
+    FROM ORDERS_02 
+    GROUP BY DELIVERY_CITY EMIT CHANGES;
+
+--- CREATE New Streams from existing Streams
+
+    CREATE STREAM ORDERS_03 AS
+        SELECT 
+            DELIVERY_CITY, 
+            COUNT(*) AS ORDER_COUNT, 
+            MAX(CAST(ORDER_TOTAL_USD AS DECIMAL(9,2))) AS BIGGEST_ORDER_USD 
+        FROM ORDERS_02 
+        GROUP BY DELIVERY_CITY EMIT CHANGES;
