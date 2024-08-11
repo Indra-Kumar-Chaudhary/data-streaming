@@ -130,3 +130,30 @@ SELECT
     MAX(CAST(ORDER_TOTAL_USD AS DECIMAL(9,2))) AS BIGGEST_ORDER_USD 
     FROM ORDERS_02 
     GROUP BY DELIVERY_CITY EMIT CHANGES;
+
+
+
+
+################################################################################################################################
+
+
+curl -i -X PUT -H "Accept:application/json" \
+    -H  "Content-Type:application/json" http://localhost:8083/connectors/source-csv-spooldir-00/config \
+    -d '{
+        "connector.class": "com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector",
+        "topic": "orders_spooldir_00",
+        "input.path": "/data/unprocessed",
+        "finished.path": "/data/processed",
+        "error.path": "/data/error",
+        "input.file.pattern": ".*\\.csv",
+        "schema.generation.enabled":"true",
+        "csv.first.row.as.header":"true"
+        }'
+
+
+
+sudo docker exec kafkacat \
+    kafkacat -b broker:9092 -t orders_spooldir_00 \
+             -C -o-1 -J \
+             -s key=s -s value=avro -r http://schema-registry:8081 | \
+             jq '.payload'
