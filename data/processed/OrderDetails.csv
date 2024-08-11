@@ -1,0 +1,3 @@
+order_id,customer_name,address,item,quantity,price,total_price
+1,Indra,KTM,Books,1,500,500
+2,Ram,BRT,T-Shirt,3,100,300
