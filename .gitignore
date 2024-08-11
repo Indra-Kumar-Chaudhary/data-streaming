@@ -7,4 +7,4 @@ volumes/kafka-connect-data
 volumes/kafka-data
 connectors-json
 databases/postgres-sql/postgres-data
-liveStripts.txt
+liveScripts.txt
