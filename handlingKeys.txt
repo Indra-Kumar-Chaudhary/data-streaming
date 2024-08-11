@@ -1,0 +1,28 @@
+No primary key handling at all;
+
+We'll start off with the most simple example, and build from there. To begin, we'll have no key at all:
+
+CREATE STREAM FOO_01 (COL1 INT, COL2 INT)
+    WITH (KAFKA_TOPIC='FOO_01', VALUE_FORMAT='AVRO', PATITIONS=1);
+
+
+INSERT INTO FOO_01 (COL1, COL2) VALUES (0,0);
+
+
+# Let's push this topic to postgres
+
+
+
+CREATE SINK CONNECTOR SINK_FOO_01_0 WITH (
+    'connector.class'                         = 'io.confluent.connect.jdbc.JdbcSinkConnector',
+    'connection.url'                          = 'jdbc:postgresql://192.168.1.9:5432/mydb',
+    'connection.user'                         = 'postgres-user',
+    'connection.password'                     = 'postgres-pw',
+    'topics'                                  = 'FOO_01',
+    'key.converter'                           = 'io.confluent.connect.avro.AvroConverter',
+    'key.converter.schema.registry.url'       = 'http://schema-registry:8081',
+    'value.converter'                         = 'io.confluent.connect.avro.AvroConverter',
+    'value.converter.schema.registry.url'     = 'http://schema-registry:8081',
+    'auto.create'                             = 'true'
+);
+
