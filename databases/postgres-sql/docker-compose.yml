@@ -1,5 +1,4 @@
----
-version: '3.7'
+version: '3.8'
 
 services:
   postgres:
@@ -11,7 +10,7 @@ services:
     environment:
       POSTGRES_USER: postgres-user
       POSTGRES_PASSWORD: postgres-pw
-      POSTGRES_DB: mydb
+      POSTGRES_DB: postgres
     volumes:
       - "./conf/custom-config.conf:/etc/postgresql/postgresql.conf"
       - "./postgres-data:/var/lib/postgresql/data"
