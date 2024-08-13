@@ -7,11 +7,5 @@ services:
       dockerfile: Dockerfile
     container_name: fakedatagenerator
     hostname: fakedatagenerator
-    # environment:
-    #   - DATABASE=mydb
-    #   - USER=postgres-user 
-    #   - HOST=localhost
-    #   - PASSWORD=postgres-pw
-    #   - POR5432
     env_file:
       - .env
