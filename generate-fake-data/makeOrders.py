@@ -4,12 +4,19 @@ import psycopg2
 import random
 import os
 import logging
+import time
+import os
 
-database = os.environ['DATABASE']
-user=os.environ['USER']
-host=os.environ['HOST']
-password=os.environ['PASSWORD']
-port=os.environ['PORT']
+from dotenv import load_dotenv
+load_dotenv()
+
+
+database=os.getenv('DATABASE')
+user=os.getenv('DBUSER')
+host=os.getenv('HOST')
+password=os.getenv('PASSWORD')
+port=os.getenv('PORT')
+
 
 fake = Faker()
 conn = psycopg2.connect(database=database, 
@@ -31,8 +38,8 @@ def generate_orders(n):
     for _ in range(n):
         # customer_id = random.choice(customer_ids)[0]
         # product_id = random.choice(product_ids)[0]
-        customer_id = random.choice(customer_ids)
-        product_id = random.choice(product_ids)
+        customer_id = random.choice(customer_ids)[0]
+        product_id = random.choice(product_ids)[0]
         quantity = random.randint(1, 5)
         order_date = fake.date_this_year()
         cur.execute('INSERT INTO orders (customer_id, product_id, quantity, order_date) VALUES (%s, %s, %s, %s)', (customer_id, product_id, quantity, order_date))
