@@ -4,11 +4,15 @@ import psycopg2
 import random
 import os 
 
-database = os.environ['DATABASE']
-user=os.environ['USER']
-host=os.environ['HOST']
-password=os.environ['PASSWORD']
-port=os.environ['PORT']
+from dotenv import load_dotenv
+load_dotenv()
+
+
+database=os.getenv('DATABASE')
+user=os.getenv('DBUSER')
+host=os.getenv('HOST')
+password=os.getenv('PASSWORD')
+port=os.getenv('PORT')
 
 
 conn = psycopg2.connect(database=database, 
