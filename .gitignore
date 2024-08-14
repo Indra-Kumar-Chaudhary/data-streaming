@@ -10,3 +10,8 @@ databases/postgres-sql/postgres-data
 liveScripts.txt
 EK/esdata01
 EK/kibanadata
+scripts.txt
+ksql-scripts.txt
+script-elastic-search.txt
+stream-joining.txt
+microservices
