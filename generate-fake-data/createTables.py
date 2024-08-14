@@ -50,6 +50,7 @@ def createTables():
         product_id INTEGER,
         quantity INTEGER,
         order_date TEXT,
+        status TEXT,
         FOREIGN KEY (customer_id) REFERENCES customers(id),
         FOREIGN KEY (product_id) REFERENCES products(id)
     )
