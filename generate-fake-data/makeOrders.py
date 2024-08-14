@@ -6,6 +6,7 @@ import os
 import logging
 import time
 import os
+import datetime
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -42,10 +43,11 @@ def generate_orders(n):
         product_id = random.choice(product_ids)[0]
         quantity = random.randint(1, 5)
         order_date = fake.date_this_year()
-        cur.execute('INSERT INTO orders (customer_id, product_id, quantity, order_date) VALUES (%s, %s, %s, %s)', (customer_id, product_id, quantity, order_date))
+        status = "Pending Confirmation"
+        cur.execute('INSERT INTO orders (customer_id, product_id, quantity, order_date,status) VALUES (%s, %s, %s, %s, %s)', (customer_id, product_id, quantity, datetime.datetime.now(), status))
+        time.sleep(random.randint(1,5))
         logging.warning("New order placed by customer: %s", customer_id)
-        logging.warning(time.sleep(5))
-        logging.warning("wait for 5 seconds")
+
 
 
 if __name__=="__main__":
