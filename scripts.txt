@@ -157,3 +157,34 @@ sudo docker exec kafkacat \
              -C -o-1 -J \
              -s key=s -s value=avro -r http://schema-registry:8081 | \
              jq '.payload'
+
+
+
+###########
+
+CREATE SINK CONNECTOR SINK_ELASTIC_TEST_01 WITH (
+    'connector.class' = 'io.confluent.connect.elasticsearch.ElasticsearchSinkConnector',
+    'connector.class' = 'http://192.168.1.9:9200',
+    'key.converter' = 'org.apache.kafka.connect.storage.StringConverter',
+    'type.name' = '_doc',
+    'topics'    = 'test01',
+    'key.ignore' = 'true',
+    'schema.ignore' = 'false'
+);
+
+
+###############You can calculate the difference between a timestamp and the current time using UNIX_TIMESTAMP() thus:##########
+
+
+SELECT TIMESTAMPTOSTRING(ORDERTIME,       'yyyy-MM-dd HH:mm:ss','Europe/London')    AS ORDER_TIME,
+       TIMESTAMPTOSTRING(UNIX_TIMESTAMP(),'yyyy-MM-dd HH:mm:ss','Europe/London')    AS NOW_TS,
+       (UNIX_TIMESTAMP() - ORDERTIME)                                               AS DIFF_MS,
+       (CAST(UNIX_TIMESTAMP() AS DOUBLE) - CAST(ORDERTIME AS DOUBLE))/1000/60/60    AS DIFF_HOURS,
+       (CAST(UNIX_TIMESTAMP() AS DOUBLE) - CAST(ORDERTIME AS DOUBLE))/1000/60/60/24 AS DIFF_DAYS
+       FROM ORDERS
+EMIT CHANGES LIMIT 5;
+
+###
+SELECT ID, CUSTOMER_ID,PRODUCT_ID,QUANTITY,ORDER_DATE,ROWTIME, TIMESTAMPTOSTRING(ROWTIME,'yyyy-MM-dd') AS ROW_DATE,TIMESTA
+MPTOSTRING(ROWTIME,'HH:mm:ss.SSS') AS ROW_TS 
+FROM ORDERS EMIT CHANGES;
